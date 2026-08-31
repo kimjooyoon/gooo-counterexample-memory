@@ -98,7 +98,7 @@ func Evaluate(meta Meta, corpusPath string, records []EvidenceRecord, corpusDige
 		Schema:                        Schema,
 		Decision:                      "FAIL_CLOSED",
 		State:                         StateRefuted,
-		Precedence:                   append([]string(nil), Precedence...),
+		Precedence:                    append([]string(nil), Precedence...),
 		SourcePath:                    meta.SourcePath,
 		SourceDigest:                  meta.SourceDigest,
 		ContractDigest:                meta.ContractDigest,
@@ -155,7 +155,6 @@ func Evaluate(meta Meta, corpusPath string, records []EvidenceRecord, corpusDige
 	}
 	return report
 }
-
 func evaluateCase(meta Meta, byID map[string]EvidenceRecord, input CaseInput) CaseResult {
 	result := CaseResult{
 		Schema:               Schema,

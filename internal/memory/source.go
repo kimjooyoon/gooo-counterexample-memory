@@ -14,7 +14,6 @@ func Digest(data []byte) string {
 	sum := sha256.Sum256(data)
 	return "sha256:" + hex.EncodeToString(sum[:])
 }
-
 func CanonicalDigest(value any) string {
 	data, err := json.Marshal(value)
 	if err != nil {
@@ -183,4 +182,3 @@ func kebab(value string) string {
 	}
 	return builder.String()
 }
-
