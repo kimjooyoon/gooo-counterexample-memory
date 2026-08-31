@@ -135,7 +135,7 @@ type CaseResult struct {
 	Replay               ReplayComparison    `json:"replay"`
 	ResolutionEvidence   *ResolutionEvidence `json:"resolution_evidence"`
 	InheritsFrom         []string            `json:"inherits_from"`
-	ExternalRelease      *ExternalRelease   `json:"external_release"`
+	ExternalRelease      *ExternalRelease    `json:"external_release"`
 	Activities           []ActivityBinding   `json:"activities"`
 }
 
