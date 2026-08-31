@@ -60,7 +60,7 @@ type EvidenceRecord struct {
 	Subject                      string              `json:"subject"`
 	SourceVersion                string              `json:"source_version"`
 	ObservedCounterexampleDigest string              `json:"observed_counterexample_digest"`
-	ExpectedResolutionEvidence  *ResolutionEvidence `json:"expected_resolution_evidence"`
+	ExpectedResolutionEvidence   *ResolutionEvidence `json:"expected_resolution_evidence"`
 	CorpusLineage                CorpusLineage       `json:"corpus_lineage"`
 	Replay                       ReplayComparison    `json:"replay"`
 	CausalFrontier               []string            `json:"causal_frontier"`
@@ -99,14 +99,14 @@ type CaseInput struct {
 	CandidateMemoryRecordID    string              `json:"candidate_memory_record_id"`
 	CandidateClaim             string              `json:"candidate_claim"`
 	CandidateObservationDigest string              `json:"candidate_observation_digest"`
-	Replay                     *ReplayComparison    `json:"replay"`
-	CausalFrontier             []string             `json:"causal_frontier"`
+	Replay                     *ReplayComparison   `json:"replay"`
+	CausalFrontier             []string            `json:"causal_frontier"`
 	ResolutionEvidence         *ResolutionEvidence `json:"resolution_evidence"`
-	InheritsFrom               []string             `json:"inherits_from"`
-	Unknown                    *UnknownTuple        `json:"unknown"`
-	CandidateDenominatorDigest string               `json:"candidate_denominator_digest"`
+	InheritsFrom               []string            `json:"inherits_from"`
+	Unknown                    *UnknownTuple       `json:"unknown"`
+	CandidateDenominatorDigest string              `json:"candidate_denominator_digest"`
 	ExternalRelease            *ExternalRelease    `json:"external_release"`
-	FixtureExpectedStatus      string               `json:"fixture_expected_status"`
+	FixtureExpectedStatus      string              `json:"fixture_expected_status"`
 }
 
 type ActivityBinding struct {
@@ -120,23 +120,23 @@ type ActivityBinding struct {
 }
 
 type CaseResult struct {
-	Schema                 string               `json:"schema"`
-	CaseID                 string               `json:"case_id"`
-	Kind                   string               `json:"kind"`
-	Subject                string               `json:"subject"`
-	Status                 string               `json:"status"`
-	State                  string               `json:"state"`
-	Retention              string               `json:"retention"`
-	Reason                 string               `json:"reason"`
-	Unknown                *UnknownTuple        `json:"unknown"`
-	EvidenceRecordID       string               `json:"evidence_record_id"`
-	EvidenceRecordDigest   string               `json:"evidence_record_digest"`
-	CausalFrontier         []string             `json:"causal_frontier"`
-	Replay                 ReplayComparison     `json:"replay"`
-	ResolutionEvidence     *ResolutionEvidence `json:"resolution_evidence"`
-	InheritsFrom           []string             `json:"inherits_from"`
-	ExternalRelease        *ExternalRelease    `json:"external_release"`
-	Activities             []ActivityBinding    `json:"activities"`
+	Schema               string              `json:"schema"`
+	CaseID               string              `json:"case_id"`
+	Kind                 string              `json:"kind"`
+	Subject              string              `json:"subject"`
+	Status               string              `json:"status"`
+	State                string              `json:"state"`
+	Retention            string              `json:"retention"`
+	Reason               string              `json:"reason"`
+	Unknown              *UnknownTuple       `json:"unknown"`
+	EvidenceRecordID     string              `json:"evidence_record_id"`
+	EvidenceRecordDigest string              `json:"evidence_record_digest"`
+	CausalFrontier       []string            `json:"causal_frontier"`
+	Replay               ReplayComparison    `json:"replay"`
+	ResolutionEvidence   *ResolutionEvidence `json:"resolution_evidence"`
+	InheritsFrom         []string            `json:"inherits_from"`
+	ExternalRelease      *ExternalRelease   `json:"external_release"`
+	Activities           []ActivityBinding   `json:"activities"`
 }
 
 type CaseSummary struct {
