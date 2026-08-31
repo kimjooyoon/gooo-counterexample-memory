@@ -22,19 +22,23 @@ mkdir -p "$artifact_root"
 before=$(git status --porcelain=v1 -z --untracked-files=all | sha256sum | awk '{print $1}')
 start=$(date +%s%N)
 "$binary" compile --source "$source" --contract "$contract" --output "$artifact_root/semantic-ir.json" > "$artifact_root/compile.json"
-"$binary" evaluate \
-  --source "$source" \
-  --contract "$contract" \
-  --ir "$artifact_root/semantic-ir.json" \
-  --corpus "$corpus" \
-  --cases "$cases" \
-  --output-dir "$artifact_root/evaluation-output" \
-  > "$artifact_root/evaluation.stdout.json"
+if ! "$binary" evaluate \
+    --source "$source" \
+    --contract "$contract" \
+    --ir "$artifact_root/semantic-ir.json" \
+    --corpus "$corpus" \
+    --cases "$cases" \
+    --output-dir "$artifact_root/evaluation-output" \
+    > "$artifact_root/evaluation.stdout.json"; then
+  echo "evaluator command failed" >&2
+  test ! -f "$artifact_root/evaluation-output/evaluation.json" || cat "$artifact_root/evaluation-output/evaluation.json" >&2
+  exit 1
+fi
 end=$(date +%s%N)
 cp "$artifact_root/evaluation-output/evaluation.json" "$artifact_root/evaluation.json"
 evaluation_ms=$(( (end - start) / 1000000 ))
 
-jq -e '
+if ! jq -e '
   .schema == "gooo/counterexample-memory/evaluation/v1" and
   .precedence == ["REFUTED", "UNKNOWN", "CLOSED"] and
   .append_only == true and
@@ -56,7 +60,11 @@ jq -e '
   (any(.cases[]; .case_id == "ce-009" and .status == "UNKNOWN" and .unknown.unknown_class == "DIRECT_MISSING" and (.unknown.blocked_by | length) == 0)) and
   (any(.cases[]; .case_id == "ce-010" and .status == "UNKNOWN" and .unknown.unknown_class == "DEPENDENCY_BLOCKED" and (.unknown.blocked_by | length) > 0)) and
   (any(.cases[]; .case_id == "ce-012" and .status == "REFUTED"))
-' "$artifact_root/evaluation.json" >/dev/null
+' "$artifact_root/evaluation.json" >/dev/null; then
+  echo "evaluator report did not satisfy the controlled corpus assertions" >&2
+  jq '{summary, cases:[.cases[] | {case_id,status,state,retention,reason,unknown}], activity_count:(.activity_bindings|length), append_only, precedence}' "$artifact_root/evaluation.json" >&2
+  exit 1
+fi
 
 actual_status=$(jq -S '[.cases[] | {key:.case_id, value:.status}] | from_entries' "$artifact_root/evaluation.json")
 jq -e --argjson status "$actual_status" '
@@ -184,4 +192,3 @@ jq -r '
   "- Go test cases: `\(.runtime.go_test_cases)`",
   "- evaluation wall ms: `\(.runtime.evaluation_ms)`"
 ' "$artifact_root/ci-report.json" > "$artifact_root/summary.md"
-
