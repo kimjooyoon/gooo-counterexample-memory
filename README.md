@@ -53,6 +53,15 @@ External release locks are optional inputs. When supplied, they must identify
 an immutable tag, commit, and SHA-256 asset digest; no live external repository
 or another repository's CI is a required gate.
 
+## Release provenance
+
+The GitHub API audit found that the existing `v0.1.0` release has
+`immutable=false`. It is preserved as `REFUTED_RELEASE_IMMUTABILITY` and is not
+counted as successful release evidence. The repository immutable-releases
+setting is now enabled; the next release must pass both REST and GraphQL
+`immutable=true` checks. See
+[provenance/release-history-v1.json](provenance/release-history-v1.json).
+
 ## CI-only verification
 
 GitHub Actions is the verification authority and uses Go 1.27. The repository

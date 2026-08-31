@@ -1,0 +1,47 @@
+{
+  "schema": "gooo/counterexample-memory/release-history-provenance/v1",
+  "repository": "kimjooyoon/gooo-counterexample-memory",
+  "audit": {
+    "source": "gooo-self-improvement-ledger API audit",
+    "method": "GitHub REST and GraphQL release/tag API",
+    "api_version": "2026-03-10",
+    "performed_on": "2026-08-31"
+  },
+  "repository_policy_after_audit": {
+    "immutable_releases_enabled": true,
+    "enabled_by": "GitHub REST PUT /repos/{owner}/{repo}/immutable-releases",
+    "external_releases_optional_input_only": true,
+    "cross_project_required_gates": 0
+  },
+  "releases": [
+    {
+      "tag": "v0.1.0",
+      "release_id": 379472311,
+      "target_commitish": "main",
+      "tag_ref_object_sha": "903d5e3143e1ee9daa41114a3e6c060ec8debf0f",
+      "tag_target_commit_sha": "40fbad10ad4d4cf14015084b28e0df01ef747c38",
+      "immutable": false,
+      "rest_immutable": false,
+      "graphql_immutable": false,
+      "status": "REFUTED_RELEASE_IMMUTABILITY",
+      "counted_as_success": false,
+      "preservation": "retain_existing_release_do_not_delete_or_recreate",
+      "assets": [
+        {"name": "gooo-counterexample-memory-v0.1.0.tar.gz", "size": 22644, "api_sha256_digest": "sha256:f6e005df1ab6f96f5761415d08c020a8b99114c2a3becfc5745e9bee57ba81a8"},
+        {"name": "release-manifest.json", "size": 313, "api_sha256_digest": "sha256:7494b8fb91c01c1888ca0c567c632b31ff14fccffd66afe60198d728e6e80750"},
+        {"name": "SHA256SUMS", "size": 114, "api_sha256_digest": "sha256:388019394df4dd8bbe7ba7ae7b4e962bc0038f4e0f3faf2a58345f3cc19fbdd9"}
+      ]
+    }
+  ],
+  "next_release_policy": {
+    "required_tag": "v0.1.1",
+    "require_immutable_release": true,
+    "require_rest_release_immutable_true": true,
+    "require_graphql_release_immutable_true": true,
+    "require_tag_target_equals_merged_main": true,
+    "require_main_conformance_success_before_tag": true,
+    "require_main_artifact_id_and_digest": true,
+    "v0.1.0_is_not_success_evidence": true,
+    "never_delete_or_recreate_v0.1.0": true
+  }
+}
