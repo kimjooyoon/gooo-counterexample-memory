@@ -1,0 +1,32 @@
+{
+  "schema": "gooo/counterexample-memory/denominator/v1",
+  "denominator_id": "gooo.denominator.counterexample-memory.v1",
+  "candidate_id": "gooo.product.counterexample-memory.v1",
+  "total": 12,
+  "fixed": true,
+  "proofs": [
+    {"choice": "FOUNDATION", "total": 4},
+    {"choice": "EVIDENCE", "total": 4},
+    {"choice": "REGRESSION", "total": 4}
+  ],
+  "indicator_classes": [
+    {"class": "DRIVER", "total": 4},
+    {"class": "OUTCOME", "total": 4},
+    {"class": "GUARDRAIL", "total": 4}
+  ],
+  "cells": [
+    {"ordinal": 1, "id": "COUNTEREXAMPLE_DECLARED", "activity": "DeclareCounterexample", "proof_choice": "FOUNDATION", "indicator_class": "DRIVER", "metric_id": "gooo.metric.counterexample.declared.v1", "metric_path": "declarations", "artifact": "cases/*.json", "evaluator": "scripts/evaluate.sh"},
+    {"ordinal": 2, "id": "IMMUTABLE_RECORD_APPENDED", "activity": "AppendImmutableEvidenceRecord", "proof_choice": "FOUNDATION", "indicator_class": "OUTCOME", "metric_id": "gooo.metric.counterexample.appended.v1", "metric_path": "corpus.records", "artifact": "corpus/evidence.ndjson", "evaluator": "scripts/evaluate.sh"},
+    {"ordinal": 3, "id": "EVIDENCE_DIGEST_BOUND", "activity": "DigestEvidenceRecord", "proof_choice": "FOUNDATION", "indicator_class": "GUARDRAIL", "metric_id": "gooo.metric.counterexample.digest.v1", "metric_path": "corpus.record_digest", "artifact": "cases/*.json", "evaluator": "scripts/evaluate.sh"},
+    {"ordinal": 4, "id": "CORPUS_LINK_CREATED", "activity": "LinkCounterexampleToCorpus", "proof_choice": "FOUNDATION", "indicator_class": "DRIVER", "metric_id": "gooo.metric.counterexample.corpus-link.v1", "metric_path": "corpus.links", "artifact": "evaluation.json", "evaluator": "scripts/evaluate.sh"},
+    {"ordinal": 5, "id": "PRIOR_VERSION_REPLAYED", "activity": "ReplayPriorVersion", "proof_choice": "EVIDENCE", "indicator_class": "OUTCOME", "metric_id": "gooo.metric.counterexample.replay.v1", "metric_path": "replay.previous_version", "artifact": "cases/*.json", "evaluator": "scripts/evaluate.sh"},
+    {"ordinal": 6, "id": "REPLAY_OUTCOME_COMPARED", "activity": "CompareReplayOutcome", "proof_choice": "EVIDENCE", "indicator_class": "GUARDRAIL", "metric_id": "gooo.metric.counterexample.replay-comparison.v1", "metric_path": "replay.comparison_digest", "artifact": "evaluation.json", "evaluator": "scripts/evaluate.sh"},
+    {"ordinal": 7, "id": "CAUSAL_FRONTIER_EMITTED", "activity": "EmitCausalFrontier", "proof_choice": "EVIDENCE", "indicator_class": "DRIVER", "metric_id": "gooo.metric.counterexample.frontier.v1", "metric_path": "causal_frontier", "artifact": "evaluation.json", "evaluator": "scripts/evaluate.sh"},
+    {"ordinal": 8, "id": "RESOLUTION_EVIDENCE_ATTACHED", "activity": "AttachResolutionEvidence", "proof_choice": "EVIDENCE", "indicator_class": "OUTCOME", "metric_id": "gooo.metric.counterexample.resolution-evidence.v1", "metric_path": "resolution_evidence", "artifact": "cases/*.json", "evaluator": "scripts/evaluate.sh"},
+    {"ordinal": 9, "id": "COUNTEREXAMPLE_RESOLVED", "activity": "ResolveCounterexampleWithEvidence", "proof_choice": "REGRESSION", "indicator_class": "GUARDRAIL", "metric_id": "gooo.metric.counterexample.resolved.v1", "metric_path": "summary.resolved", "artifact": "summary.json", "evaluator": "scripts/evaluate.sh"},
+    {"ordinal": 10, "id": "EVIDENCE_CONFLICT_PRESERVED", "activity": "PreserveEvidenceConflict", "proof_choice": "REGRESSION", "indicator_class": "DRIVER", "metric_id": "gooo.metric.counterexample.conflict.v1", "metric_path": "evidence_conflicts", "artifact": "cases/*.json", "evaluator": "scripts/evaluate.sh"},
+    {"ordinal": 11, "id": "DENOMINATOR_CHANGE_VALIDATED", "activity": "ValidateDenominatorChange", "proof_choice": "REGRESSION", "indicator_class": "OUTCOME", "metric_id": "gooo.metric.counterexample.denominator-change.v1", "metric_path": "denominator_changes", "artifact": "evaluation.json", "evaluator": "scripts/evaluate.sh"},
+    {"ordinal": 12, "id": "COUNTEREXAMPLE_INHERITED", "activity": "InheritCounterexampleAcrossVersion", "proof_choice": "REGRESSION", "indicator_class": "GUARDRAIL", "metric_id": "gooo.metric.counterexample.inheritance.v1", "metric_path": "inheritance", "artifact": "evaluation.json", "evaluator": "scripts/evaluate.sh"}
+  ]
+}
+

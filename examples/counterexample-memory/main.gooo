@@ -1,0 +1,29 @@
+package counterexamplememory
+namespace counterexamplememory
+
+entity CounterexampleDeclaration id "gooo://counterexample-memory/entity/declaration"
+entity ImmutableEvidenceRecord id "gooo://counterexample-memory/entity/immutable-evidence-record"
+entity EvidenceDigest id "gooo://counterexample-memory/entity/evidence-digest"
+entity CorpusLink id "gooo://counterexample-memory/entity/corpus-link"
+entity ReplayComparison id "gooo://counterexample-memory/entity/replay-comparison"
+entity CausalFrontier id "gooo://counterexample-memory/entity/causal-frontier"
+entity ResolutionEvidence id "gooo://counterexample-memory/entity/resolution-evidence"
+entity CounterexampleResolution id "gooo://counterexample-memory/entity/resolution"
+entity EvidenceConflict id "gooo://counterexample-memory/entity/evidence-conflict"
+entity DenominatorChange id "gooo://counterexample-memory/entity/denominator-change"
+entity InheritedCounterexample id "gooo://counterexample-memory/entity/inheritance"
+entity EvaluationReport id "gooo://counterexample-memory/entity/evaluation-report"
+
+activity DeclareCounterexample(CounterexampleDeclaration) -> CounterexampleDeclaration
+activity AppendImmutableEvidenceRecord(CounterexampleDeclaration) -> ImmutableEvidenceRecord
+activity DigestEvidenceRecord(ImmutableEvidenceRecord) -> EvidenceDigest
+activity LinkCounterexampleToCorpus(CounterexampleDeclaration) -> CorpusLink
+activity ReplayPriorVersion(CounterexampleDeclaration) -> ReplayComparison
+activity CompareReplayOutcome(ReplayComparison) -> ReplayComparison
+activity EmitCausalFrontier(CounterexampleDeclaration) -> CausalFrontier
+activity AttachResolutionEvidence(CounterexampleDeclaration) -> ResolutionEvidence
+activity ResolveCounterexampleWithEvidence(ResolutionEvidence) -> CounterexampleResolution
+activity PreserveEvidenceConflict(CounterexampleDeclaration) -> EvidenceConflict
+activity ValidateDenominatorChange(CounterexampleDeclaration) -> DenominatorChange
+activity InheritCounterexampleAcrossVersion(CounterexampleDeclaration) -> InheritedCounterexample
+
