@@ -1,0 +1,8 @@
+{
+  "schema": "gooo/counterexample-memory/external-release-lock/v1",
+  "optional": true,
+  "required_for_ci": false,
+  "required_for_evaluation": false,
+  "fields": ["repository", "tag", "commit_sha", "asset", "asset_digest"],
+  "authority": "immutable_external_release_only"
+}

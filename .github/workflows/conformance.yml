@@ -1,0 +1,90 @@
+name: Counterexample memory conformance
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: counterexample-memory-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  conformance:
+    runs-on: ubuntu-latest
+    env:
+      SUBJECT_SHA: ${{ github.event.pull_request.head.sha || github.sha }}
+    steps:
+      - name: Checkout subject
+        uses: actions/checkout@v5
+        with:
+          ref: ${{ env.SUBJECT_SHA }}
+
+      - name: Install Go 1.27
+        uses: actions/setup-go@v6
+        with:
+          go-version: 1.27.0
+          cache: false
+
+      - name: Run Go verification in CI
+        shell: bash
+        run: |
+          set -Eeuo pipefail
+          test "$(go env GOVERSION)" = "go1.27.0"
+          before=$(git status --porcelain=v1 -z --untracked-files=all | sha256sum | awk '{print $1}')
+          gofmt_files=$(gofmt -l cmd internal)
+          echo "gofmt files: ${gofmt_files:-none}"
+          if test -n "$gofmt_files"; then
+            gofmt -d $gofmt_files
+            exit 1
+          fi
+          go vet ./...
+          test_start=$(date +%s%N)
+          go test -json ./... > "$RUNNER_TEMP/go-test.json"
+          test_end=$(date +%s%N)
+          go_test_cases=$(jq -s '[.[] | select(.Action == "pass" and .Test != null)] | length' "$RUNNER_TEMP/go-test.json")
+          test "$go_test_cases" -ge 1
+          go test -race ./...
+          build_start=$(date +%s%N)
+          go build -trimpath -o "$RUNNER_TEMP/gooo-counterexample-memory" ./cmd/gooo-counterexample-memory
+          build_end=$(date +%s%N)
+          after=$(git status --porcelain=v1 -z --untracked-files=all | sha256sum | awk '{print $1}')
+          test "$before" = "$after"
+          echo "$go_test_cases" > "$RUNNER_TEMP/go-test-cases"
+          echo "$(( (test_end - test_start) / 1000000 ))" > "$RUNNER_TEMP/test-ms"
+          echo "$(( (build_end - build_start) / 1000000 ))" > "$RUNNER_TEMP/build-ms"
+
+      - name: Evaluate the fixed corpus
+        shell: bash
+        run: |
+          set -Eeuo pipefail
+          bash scripts/evaluate.sh \
+            "$RUNNER_TEMP/counterexample-memory-artifact" \
+            "$RUNNER_TEMP/gooo-counterexample-memory" \
+            examples/counterexample-memory/main.gooo \
+            contracts/counterexample-memory-denominator-v1.json \
+            fixtures/corpus/evidence.ndjson \
+            fixtures/cases \
+            "$SUBJECT_SHA" \
+            "$(go env GOVERSION)" \
+            "$(cat "$RUNNER_TEMP/go-test-cases")" \
+            "$(cat "$RUNNER_TEMP/build-ms")" \
+            "$(cat "$RUNNER_TEMP/test-ms")"
+          cat "$RUNNER_TEMP/counterexample-memory-artifact/summary.md" >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Upload machine-readable evidence
+        id: evidence
+        uses: actions/upload-artifact@v4
+        with:
+          name: gooo-counterexample-memory-evidence-${{ github.run_id }}
+          path: ${{ runner.temp }}/counterexample-memory-artifact
+          if-no-files-found: error
+
+      - name: Record artifact identity
+        run: |
+          echo "- artifact id: `${{ steps.evidence.outputs.artifact-id }}`" >> "$GITHUB_STEP_SUMMARY"
+          echo "- artifact digest: `${{ steps.evidence.outputs.artifact-digest }}`" >> "$GITHUB_STEP_SUMMARY"

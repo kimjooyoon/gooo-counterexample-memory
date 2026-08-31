@@ -1,0 +1,49 @@
+name: Immutable counterexample memory release
+
+on:
+  push:
+    tags: ["v*"]
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout tagged source
+        uses: actions/checkout@v5
+        with:
+          fetch-depth: 0
+
+      - name: Build immutable source asset and digest
+        id: asset
+        shell: bash
+        run: |
+          set -Eeuo pipefail
+          tag="$GITHUB_REF_NAME"
+          commit_sha="$(git rev-parse HEAD)"
+          asset="gooo-counterexample-memory-${tag}.tar.gz"
+          git archive --format=tar.gz --prefix="gooo-counterexample-memory-${tag}/" "$commit_sha" > "$RUNNER_TEMP/$asset"
+          asset_digest="sha256:$(sha256sum "$RUNNER_TEMP/$asset" | awk '{print $1}')"
+          printf '%s  %s\n' "$asset_digest" "$asset" > "$RUNNER_TEMP/SHA256SUMS"
+          jq -S -n --arg tag "$tag" --arg commit_sha "$commit_sha" --arg asset "$asset" --arg asset_digest "$asset_digest" \
+            '{schema:"gooo/counterexample-memory/release-manifest/v1",tag:$tag,commit_sha:$commit_sha,asset:$asset,asset_digest:$asset_digest,immutable:true}' \
+            > "$RUNNER_TEMP/release-manifest.json"
+          echo "asset=$asset" >> "$GITHUB_OUTPUT"
+          echo "asset_digest=$asset_digest" >> "$GITHUB_OUTPUT"
+          cat "$RUNNER_TEMP/release-manifest.json" >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Publish release without overwrite
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -Eeuo pipefail
+          gh release create "$GITHUB_REF_NAME" \
+            --verify-tag \
+            --title "gooo-counterexample-memory $GITHUB_REF_NAME" \
+            --notes "Immutable source asset for $GITHUB_SHA. The release manifest binds the asset digest to the tag commit." \
+            "$RUNNER_TEMP/${{ steps.asset.outputs.asset }}" \
+            "$RUNNER_TEMP/SHA256SUMS" \
+            "$RUNNER_TEMP/release-manifest.json"
+
